@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty name="LOG_DIR" source="logback.log.dir" defaultValue="/log/test" />
+    <springProperty name="instanceName" source="server.name" scope="context"/>
+
+    <springProfile name="local">
+        <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</Pattern>
+            </encoder>
+        </appender>
+
+        <logger name="com.example.employee.management" level="debug"/>
+
+        <root level="info">
+            <appender-ref ref="consoleAppender" />
+        </root>
+    </springProfile>
+
+    <springProfile name="!local">
+        <appender name="rollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+            </encoder>
+
+            <file>${LOG_DIR}/test-scheduler.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_DIR}/test-scheduler.log.%d{yyyy-MM-dd}.%i.gz
+                </fileNamePattern>
+
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>200MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>10</maxHistory>
+            </rollingPolicy>
+        </appender>
+
+        <!-- 배치 로그 start -->
+        <!-- 배치 로그 start -->
+        <!-- 배치 로그 start -->
+        <appender name="batchRrollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</Pattern>
+            </encoder>
+
+            <file>${LOG_DIR}/batch.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_DIR}/batch.log.%d{yyyy-MM-dd}.%i.gz
+                </fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>200MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>3</maxHistory>
+            </rollingPolicy>
+        </appender>
+
+        <!-- 에러로그만 분리 start -->
+        <!-- 에러로그만 분리 start -->
+        <!-- 에러로그만 분리 start -->
+        <appender name="errorRrollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!-- 에러만 쌓을수 있게 분리 -->
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>error</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</Pattern>
+            </encoder>
+
+            <file>${LOG_DIR}/error-test.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_DIR}/error.log.%d{yyyy-MM-dd}.%i.gz
+                </fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>200MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>1</maxHistory>
+            </rollingPolicy>
+        </appender>
+
+        <appender name="errorAsyncAppender" class="ch.qos.logback.classic.AsyncAppender">
+            <discardingThreshold>0</discardingThreshold>
+            <queueSize>10000</queueSize>
+            <appender-ref ref="errorRrollingFileAppender" />
+        </appender>
+
+        <logger name="com.example.employee.management"  level="info"> <!-- additivity="FALSE" 설정시 해당 파일만 로그 찍히게 가능 -->
+            <appender-ref ref="errorAsyncAppender" />
+        </logger>
+        <!-- 에러로그만 분리 end -->
+        <!-- 에러로그만 분리 end -->
+        <!-- 에러로그만 분리 end -->
+
+        <root level="debug">
+            <appender-ref ref="rollingFileAppender" />
+        </root>
+
+    </springProfile>
+
+</configuration>
