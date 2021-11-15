@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 // API 테스트를 위한 컨트롤러
-@Api(tags = "1. 테스트 HELLO WORD 출력")
+@Api(tags = "1. 테스트 HELLO WORLD 출력")
 @RestController
 public class TestController {
 

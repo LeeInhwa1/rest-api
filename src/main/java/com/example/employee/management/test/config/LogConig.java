@@ -26,7 +26,7 @@ public class LogConig {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-//    @Pointcut // 특정정
+//    @Pointcut // 특정
 
     // 컨트롤러 매핑 뒤에 ..* 혹은 패스 적어서 설정 가능
     @Around("within(com.example.employee.management.test.controller..*)") // AOP 적용을 할 것인지 정의
