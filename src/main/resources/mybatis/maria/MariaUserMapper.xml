@@ -9,4 +9,9 @@
         FROM test
         WHERE id = #{id}
     </select>
+
+    <select id="getAuthentications" resultType="com.example.employee.management.test.model.Authentication">
+        SELECT id, url, hasAuthority, date, updateDate
+        FROM security_authreq
+    </select>
 </mapper>

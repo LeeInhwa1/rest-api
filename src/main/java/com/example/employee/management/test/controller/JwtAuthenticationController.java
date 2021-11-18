@@ -14,13 +14,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "4. JWT 토큰 연동 테스트")
 @RestController
@@ -73,5 +70,36 @@ public class JwtAuthenticationController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @ApiOperation(value = "페이지 별 권한 확인 ADMIN")
+    @ResponseBody
+    @RequestMapping(value = "/adminOnly", method = RequestMethod.GET)
+    public String adminOnly(Authentication auth) {
+        return "Secret Page!!"
+                + "<br>my roles: "+ auth.getAuthorities().toString();
+    }
+
+    @ApiOperation(value = "페이지 별 권한 확인 USER")
+    @ResponseBody
+    @RequestMapping(value = "/userOnly", method = RequestMethod.GET)
+    public String userOnly(Authentication auth) {
+        return "USER ONLY"
+                + "<br>my roles: "+ auth.getAuthorities().toString();
+    }
+
+    @ApiOperation(value = "페이지 별 권한 확인 USER SUB PAGE")
+    @ResponseBody
+    @RequestMapping(value = "/userOnly/{sub}", method = RequestMethod.GET)
+    public String userOnlySub(Authentication auth, @PathVariable("sub") String sub) {
+        return "USER ONLY SUB PAGE (" + sub + ")"
+                + "<br>my roles: "+ auth.getAuthorities().toString();
+    }
+
+    @ApiOperation(value = "페이지 별 권한 확인 EVERYBODY")
+    @ResponseBody
+    @RequestMapping(value = "/everybodyOK", method = RequestMethod.GET)
+    public String everybodyOK() {
+        return "EVERYBODY OK";
     }
 }
